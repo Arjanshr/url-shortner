@@ -6,50 +6,41 @@ use App\Http\Requests\ShortUrlsRequest;
 use App\Models\ShortUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 
 class ShortUrlsController extends Controller
 {
-    public function create(ShortUrlsRequest $request, ShortUrl $short_url)
+    public function index()
     {
-        $url = $short_url->create(
-            [
-                'long_url' => $request->url,
-                'short_url' => $this->generateUrl(6),
-                'expiration_time' => $this->makeExpirationTime($request->hours, $request->minutes, $request->seconds)
-            ]
-        );
+        $url = env('APP_URL') . '/api/short-url';
+        $request = Request::create($url, 'GET');
+        $urls = Route::dispatch($request);
+        // dd($urls);
+        return view('urls.index', compact('urls'));;
+    }
+
+    public function create(Request $request, ShortUrl $short_url)
+    {
+        $url = env('APP_URL') . '/api/short-url';
+
+        $post_request = Request::create($url, 'POST', $request->toArray());
+
+        $response = Route::dispatch($post_request,$short_url);
+
         return back()->withSuccess([
             'message' => 'Your short url is successfully generaed',
-            'short_url' => $url->short_url
+            'short_url' => $response->getData()->short_url
         ]);
     }
 
     public function reroute($code)
     {
         $short_url = ShortUrl::where('short_url', $code)->first();
-        if($short_url==null) return response('This url has been deleted', 410);
+        if ($short_url == null) return response('This url has been deleted', 410);
         $is_expired = $this->checkIfExpired($short_url->expiration_time);
-        if(!$is_expired) return redirect($short_url->long_url,302);
+        if (!$is_expired) return redirect($short_url->long_url, 302);
         else abort(419);
-    }
-
-    private function makeExpirationTime($hours, $minutes, $seconds)
-    {
-        $total_seconds = ($hours == null ? 0 : $hours * 60 * 60) + ($minutes == null ? 0 : $minutes * 60) + ($seconds == null ? 0 : $seconds);
-        if ($total_seconds == 0) $expirataion_time = null;
-        else $expirataion_time = Carbon::now()->addSeconds($total_seconds);
-        return $expirataion_time;
-    }
-
-    private function generateUrl($length = 6)
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $char_length = strlen($characters);
-        $url = '';
-        for ($i = 0; $i < $length; $i++) {
-            $url .= $characters[random_int(0, $char_length - 1)];
-        }
-        return $url;
     }
 
 
