@@ -11,10 +11,16 @@ use Illuminate\Support\Facades\Route;
 
 class ShortUrlsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // $query = explode('/', request('search'));
+        //     $search = end($query);
+        //     if ($search == '')
+        //         $search = array_slice($query, -2, 1);
+        //         return $search;
         $url = env('APP_URL') . '/api/short-url';
         $request = Request::create($url, 'GET');
+        // dd(Route::dispatch($request));
         $urls = Route::dispatch($request)->getData();
         return view('urls.index', compact('urls'));
     }

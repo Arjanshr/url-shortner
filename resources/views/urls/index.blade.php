@@ -26,6 +26,11 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
+                    <form method="get" action="">
+                        <input type="search" class="form-control" placeholder="Search" name="search" value="{{old('search')}}">
+                    </form>
+                </div>
+                <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap4">
@@ -58,7 +63,7 @@
                                                                 </button>
                                                             </form>
                                                         </td>
-                                                        <td>{{ $url->short_url }}</td>
+                                                        <td><a href="{{ $url->short_url }}" target="_blank">{{ $url->short_url }}</a></td>
                                                         <td>{{ $url->long_url }}</td>
                                                         <td>{{ $url->expires_on }}</td>
 

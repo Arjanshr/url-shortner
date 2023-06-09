@@ -11,9 +11,21 @@ use Illuminate\Support\Carbon;
 class ShortUrlsApiController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-       return ShortUrlResource::collection(ShortUrl::paginate(5));
+        $urls = ShortUrl::paginate(5);
+
+        if (isset($request->query->all()['search'])) {
+            $query = explode('/', request('search'));
+            $search = end($query);
+            if ($search == '')
+                $search = array_slice($query, -2, 1)[0];
+                // dd($search);
+            $urls = ShortUrl::where('short_url', 'like', '%' . $search . '%')
+                ->Orwhere('long_url', 'like', '%' . request('search') . '%')
+                ->paginate(5);
+        }
+        return ShortUrlResource::collection($urls);
     }
 
     public function store(ShortUrlsRequest $request, ShortUrl $short_url)
@@ -27,11 +39,11 @@ class ShortUrlsApiController extends Controller
         );
     }
 
-  
+
     public function destroy(ShortUrl $short_url)
     {
-        if($short_url->delete())
-        return response()->json(true);
+        if ($short_url->delete())
+            return response()->json(true);
         return response()->json(false);
     }
 
