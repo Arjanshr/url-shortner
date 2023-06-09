@@ -15,25 +15,33 @@ class ShortUrlsController extends Controller
     {
         $url = env('APP_URL') . '/api/short-url';
         $request = Request::create($url, 'GET');
-        $urls = Route::dispatch($request);
-        // dd($urls);
-        return view('urls.index', compact('urls'));;
+        $urls = Route::dispatch($request)->getData();
+        return view('urls.index', compact('urls'));
     }
 
-    public function create(Request $request, ShortUrl $short_url)
+    public function create(ShortUrlsRequest $request, ShortUrl $short_url)
     {
         $url = env('APP_URL') . '/api/short-url';
 
         $post_request = Request::create($url, 'POST', $request->toArray());
 
         $response = Route::dispatch($post_request,$short_url);
-
         return back()->withSuccess([
             'message' => 'Your short url is successfully generaed',
             'short_url' => $response->getData()->short_url
         ]);
     }
 
+    public function destroy($short_url)
+    {
+        $url = env('APP_URL') . '/api/short-url/'.$short_url;
+        $request = Request::create($url, 'DELETE');
+        $response = Route::dispatch($request);
+        if($response)
+        return back()->withSuccess([
+            'message' => 'Your short url is successfully deleted',
+        ]);
+    }
     public function reroute($code)
     {
         $short_url = ShortUrl::where('short_url', $code)->first();

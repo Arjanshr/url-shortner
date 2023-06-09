@@ -5,7 +5,23 @@
 @section('content_header')
     <h1>Users</h1>
 @stop
+
 @section('content')
+    @if (session()->has('success'))
+        <div class="alert alert-success">
+            @if (is_array(session('success')))
+                <ul>
+                    @foreach (session('success') as $index => $message)
+                        <li id="{{ $index }}">{{ $message }}</li>{!! $index == 'short_url'
+                            ? '<button class="btn btn-secondary" onclick="copyUrl()">Copy url to clipboard</button>'
+                            : '' !!}
+                    @endforeach
+                </ul>
+            @else
+                {{ session('success') }}
+            @endif
+        </div>
+    @endif
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -27,7 +43,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($urls->getData()->data as $url)
+                                                @foreach ($urls->data as $url)
                                                     <tr>
                                                         <td width="20px">{{ $loop->iteration }}</td>
                                                         <td>
@@ -61,6 +77,13 @@
                                         </table>
                                     </div>
                                 </div>
+                                @foreach ($urls->meta->links as $link)
+                                    @if (!$link->active && $link->url != null)
+                                        <a href="{{ $link->url }}" class="btn btn-primary">{!! $link->label !!}</a>
+                                    @else
+                                        <a class="btn btn-secondary">{!! $link->label !!}</a>
+                                    @endif
+                                @endforeach
                             </div>
                         </div>
 
@@ -82,7 +105,7 @@
     <script>
         $(document.body).on('click', '.delete', function(event) {
             event.preventDefault();
-            var form =  $(this).closest("form");
+            var form = $(this).closest("form");
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",

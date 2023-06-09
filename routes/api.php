@@ -17,8 +17,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-    Route::resource('short-url',ShortUrlsApiController::class)->except('index');
 });
-Route::get('short-url',[ShortUrlsApiController::class,'index']);
-Route::post('short-url',[ShortUrlsApiController::class,'store']);
-// Route::get('{code}',[ShortUrlsApiController::class, 'reroute']);
+Route::post('short-url', [ShortUrlsApiController::class, 'store']);
+Route::middleware('auth')->group(function () {
+    Route::get('short-url', [ShortUrlsApiController::class, 'index']);
+    Route::delete('short-url/{short_url}', [ShortUrlsApiController::class, 'destroy']);
+});

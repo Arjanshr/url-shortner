@@ -10,17 +10,12 @@ use Illuminate\Support\Carbon;
 
 class ShortUrlsApiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-       return ShortUrlResource::collection(ShortUrl::get());
+       return ShortUrlResource::collection(ShortUrl::paginate(5));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ShortUrlsRequest $request, ShortUrl $short_url)
     {
         return  $short_url->create(
@@ -32,28 +27,12 @@ class ShortUrlsApiController extends Controller
         );
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+  
+    public function destroy(ShortUrl $short_url)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if($short_url->delete())
+        return response()->json(true);
+        return response()->json(false);
     }
 
     private function makeExpirationTime($hours, $minutes, $seconds)
