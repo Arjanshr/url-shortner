@@ -1,10 +1,11 @@
 # url-shortner
  Url shortner project made in laravel installation guide
+
 ##Syestem Requirements
--PHP >= PHP 8.1
--Apache Server
--Mysql Server
--(Recommended to use XAMPP https://www.apachefriends.org/download.html)
+- PHP >= PHP 8.1
+- Apache Server
+- Mysql Server
+- (Recommended to use XAMPP https://www.apachefriends.org/download.html)
 
 ##Installation
 - Create a database for the project
