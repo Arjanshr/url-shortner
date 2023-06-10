@@ -28,6 +28,6 @@
 ### Backend
 - Register an admin via link https://localhost:8000/register
 - Login to admin panel via link https://localhost:8000/login
-- Manave all the shortened urls going to Urls > Manage Urls button from the menu bar on lest side of your screen
+- Manage all the shortened urls going to Urls > Manage Urls button from the menu bar on lest side of your screen
 
 ##### ENJOY

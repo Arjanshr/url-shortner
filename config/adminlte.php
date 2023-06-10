@@ -307,13 +307,20 @@ return [
             'text' => 'search',
         ],
         
+        ['header' => 'Go to main site'],
+        [
+            'text' => 'Go to main site',
+            'url'  => '/',
+            'target'=>'_blank',
+            'icon' => 'fas fa-fw fa-home',
+        ],
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
             'url'  => 'profile',
             'icon' => 'fas fa-fw fa-user',
         ],
-        
+        ['header' => 'SYSTEM'],
         [
             'text'    => 'Urls',
             'icon'    => 'fas fa-fw fa-link',
