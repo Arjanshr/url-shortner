@@ -39,7 +39,7 @@ class ShortUrlsController extends Controller
     public function reroute($code)
     {
         $short_url = ShortUrl::where('short_url', $code)->first();
-        if ($short_url == null) return response('This url has been deleted', 410);
+        if ($short_url == null) return response('This url has been deleted or does not exist', 410);
         $is_expired = $this->short_url_service->checkIfExpired($short_url->expiration_time);
         if (!$is_expired) return redirect($short_url->long_url, 302);
         else abort(419);
